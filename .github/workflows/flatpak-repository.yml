@@ -16,16 +16,22 @@ jobs:
           echo -n "$GPG_PRIVATE_KEY" | gpg --import --batch
 
       - name: Build Flatpak
-        run: |
-          flatpak remote-add --user --if-not-exists flathub "https://dl.flathub.org/repo/flathub.flatpakrepo"
-          flatpak-builder build --user --install-deps-from=flathub --force-clean --repo=repo ${MANIFEST}
-          flatpak build-update-repo --generate-static-deltas --prune repo
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          build-bundle: false
+          # bundle: glide.flatpak
+          manifest-path: app.glide_browser.glide.yml
+          gpg-sign: ${{ vars.GPG_PRIVATE_KEY_ID }}
+
+      - run: ls -al
+
 
       - name: Upload Artifact
         id: deployment
         uses: actions/upload-pages-artifact@v4
         with:
           path: repo/
+
 
   deploy:
     environment:
