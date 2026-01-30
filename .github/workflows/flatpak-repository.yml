@@ -5,6 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GPG_KEY_ID: ${{ vars.GPG_PRIVATE_KEY_ID }}
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-25.08
+      options: --privileged
     steps:
       - name: Checkout
         uses: actions/checkout@v6
