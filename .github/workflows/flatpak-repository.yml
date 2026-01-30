@@ -2,29 +2,29 @@ name: Vendored Flatpak Repository
 on: [push]
 jobs:
   build:
-  runs-on: ubuntu-latest
-  env:
-    GPG_KEY_ID: ${{ vars.GPG_PRIVATE_KEY_ID }}
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v6
+    runs-on: ubuntu-latest
+    env:
+      GPG_KEY_ID: ${{ vars.GPG_PRIVATE_KEY_ID }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
 
-    - name: Setup GPG
-      env:
-        GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      run: echo -n $GPG_PRIVATE_KEY | gpg --import --batch
+      - name: Setup GPG
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: echo -n $GPG_PRIVATE_KEY | gpg --import --batch
 
-    - name: Build Flatpak
-      run: |
-        flatpak remote-add --user --if-not-exists flathub "https://dl.flathub.org/repo/flathub.flatpakrepo"
-        flatpak-builder build --user --install-deps-from=flathub --force-clean --repo=repo ${MANIFEST}
-        flatpak build-update-repo --generate-static-deltas --prune repo
+      - name: Build Flatpak
+        run: |
+          flatpak remote-add --user --if-not-exists flathub "https://dl.flathub.org/repo/flathub.flatpakrepo"
+          flatpak-builder build --user --install-deps-from=flathub --force-clean --repo=repo ${MANIFEST}
+          flatpak build-update-repo --generate-static-deltas --prune repo
 
-    - name: Upload Artifact
-      id: deployment
-      uses: actions/upload-pages-artifact@v4
-      with:
-        path: repo/
+      - name: Upload Artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: repo/
 
   deploy:
     environment:
