@@ -13,7 +13,7 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
-          echo -n $GPG_PRIVATE_KEY | gpg --import --batch
+          echo -n "$GPG_PRIVATE_KEY" | gpg --import --batch
 
       - name: Build Flatpak
         run: |
